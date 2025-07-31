@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Rooms(models.Model):
+class Room(models.Model):
     room_number = models.CharField(max_length=10, unique=True)
     room_description = models.TextField(blank=True, null=True)
     TYPE_CHOICES = [
@@ -30,17 +30,17 @@ class Bookings(models.Model):
         ('cnf', 'Підтверджено'),
         ('clc', 'Скасовано')
     ]
-    room = models.ForeignKey(Rooms, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     check_in_date = models.DateTimeField()
     check_out_date = models.DateTimeField()
-    email = models.EmailField()
+    email = models.EmailField(default='noname@example.com')
     status = models.CharField(max_length=3, choices=STATUS_CHOICES, default='wtn')
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return f"Booking for {self.room.room_number} from {self.check_in_date} to {self.check_out_date} by {self.user.username}"
-    
+
     class Meta:
         verbose_name = 'Бронювання'
         verbose_name_plural = 'Бронювання'
